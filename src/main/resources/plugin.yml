@@ -1,0 +1,6 @@
+name: PtBackpack
+version: 1.0.0
+main: me.prettytroubles.ptbackpack.PtBackpack
+authors:
+  - PrettyTroubles
+  - RoboMWM
