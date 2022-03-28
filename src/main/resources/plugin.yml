@@ -4,3 +4,4 @@ main: me.prettytroubles.ptbackpack.PtBackpack
 authors:
   - PrettyTroubles
   - RoboMWM
+api-version: '1.18'
