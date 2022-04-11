@@ -79,7 +79,11 @@ public class PlayerListener implements Listener{
         {
             if(event.getAction().isRightClick())
             {
+                if (!event.getClickedBlock().getType().isInteractable())
+                {
                     openBackpack(event.getPlayer());
+                    event.setCancelled(true);
+                }
             }
         }
 
