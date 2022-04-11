@@ -1,18 +1,27 @@
 package me.prettytroubles.ptbackpack;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerListener implements Listener{
     PtBackpack plugin;
+    private List<ItemStack> testBackPackStorage = new ArrayList<>();
+
     public PlayerListener(PtBackpack plugin)
     {
         this.plugin = plugin;
@@ -43,16 +52,60 @@ public class PlayerListener implements Listener{
         if (event.getClick()== ClickType.RIGHT)
         {
             event.setCancelled(true);
-            Inventory backpack = plugin.getServer().createInventory(null, 9);
-            new BukkitRunnable()
-            {
-
-                @Override
-                public void run() {
-                    Player player = (Player) event.getWhoClicked();
-                    player.openInventory(backpack).;
-                }
-            }.runTaskLater(plugin,1);
+            Player player = (Player) event.getWhoClicked();
+            openBackpack(player);
         }
     }
+    @EventHandler
+    public void onCloseBackPack(InventoryCloseEvent event)
+    {
+        Inventory backpack = event.getInventory();
+        if (event.getView().getTitle().equals("Small Backpack"))
+        {
+            testBackPackStorage.clear();
+            for (ItemStack itemStack:backpack.getContents())
+            {
+                testBackPackStorage.add(itemStack);
+            }
+
+        }
+
+
+    }
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event)
+    {
+        if(event.getItem().getType() == Material.BROWN_MUSHROOM)
+        {
+            if(event.getAction().isRightClick())
+            {
+                    openBackpack(event.getPlayer());
+            }
+        }
+
+    }
+    private void openBackpack(Player player)
+    {
+        Inventory backpack = plugin.getServer().createInventory(null, 9,"Small Backpack");
+        for (ItemStack itemStack : testBackPackStorage)
+        {
+            if (itemStack == null)
+            {
+                continue;
+            }
+            backpack.addItem(itemStack);
+
+        }
+        new BukkitRunnable()
+        {
+
+            @Override
+            public void run() {
+
+                player.openInventory(backpack);
+            }
+        }.runTaskLater(plugin,1);
+    }
+
+
 }
